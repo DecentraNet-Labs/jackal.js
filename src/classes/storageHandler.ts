@@ -264,8 +264,11 @@ export class StorageHandler extends EncodingHandler implements IStorageHandler {
     }
     try {
       this.path = path || this.path
+      console.debug("[JKL DEBUG] <loadDirectory> Folder Path:", this.path)
       this.meta = await this.reader.loadFolderMetaHandler(this.path)
+      console.debug("[JKL DEBUG] <loadDirectory> Folder Meta:", this.meta)
       this.children = this.reader.readFolderContents(this.path)
+      console.debug("[JKL DEBUG] <loadDirectory> Folder Children:", this.children)
     } catch (err) {
       throw warnError('storageHandler loadDirectory()', err)
     }
@@ -323,6 +326,13 @@ export class StorageHandler extends EncodingHandler implements IStorageHandler {
    */
   listChildFileMetas (): IFileMetaData[] {
     return Object.values(this.children.files)
+  }
+
+  /**
+   *
+   */
+  getChildren(): IChildMetaDataMap {
+    return this.children
   }
 
   /**
@@ -687,6 +697,21 @@ export class StorageHandler extends EncodingHandler implements IStorageHandler {
 
   /**
    *
+   * @returns {IUploadPackage[]}
+   */
+  getCurrentQueue(): IUploadPackage[] {
+    return this.uploadQueue
+  }
+
+  /**
+   *
+   */
+  getCurrentMeta(): IFolderMetaHandler {
+    return this.meta
+  }
+
+  /**
+   *
    * @param {string} name
    */
   removeFromQueue (name: string): void {
@@ -697,6 +722,13 @@ export class StorageHandler extends EncodingHandler implements IStorageHandler {
       }
     }
     this.uploadQueue = filtered
+  }
+
+  /**
+   *
+   */
+  clearQueue(): void {
+    this.uploadQueue = []
   }
 
   /**
@@ -1179,7 +1211,7 @@ export class StorageHandler extends EncodingHandler implements IStorageHandler {
    * @returns {Promise<IProviderUploadResponse>}
    * @protected
    */
-  protected async uploadFile (
+  async uploadFile (
     url: string,
     startBlock: number,
     file: File,
@@ -1336,7 +1368,7 @@ export class StorageHandler extends EncodingHandler implements IStorageHandler {
     try {
       const baseMeta = await FolderMetaHandler.create({
         count: 0,
-        location: 'ulid',
+        location: '',
         name
       })
       return await this.baseFolderToMsgs({

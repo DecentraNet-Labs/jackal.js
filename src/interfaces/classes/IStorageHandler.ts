@@ -1,17 +1,21 @@
 import {
   IBuyStorageOptions,
+  IChildMetaDataMap,
   ICreateFolderOptions,
   IDeleteTargetOptions,
   IDownloadTracker,
   IFileMetaData,
   IFileParticulars,
   IFolderMetaData,
+  IFolderMetaHandler,
   IInitStorageOptions,
   IProviderIpSet,
+  IProviderUploadResponse,
   IRegisterPubKeyOptions,
   IShareOptions,
   IStagedUploadPackage,
   IStorageStatus,
+  IUploadPackage,
   IWrappedEncodeObject
 } from '@/interfaces'
 import type { TSharedRootMetaDataMap } from '@/types'
@@ -32,6 +36,8 @@ export interface IStorageHandler {
   listChildFiles (): string[]
 
   listChildFileMetas (): IFileMetaData[]
+
+  getChildren(): IChildMetaDataMap
 
   upgradeSigner (): Promise<void>
 
@@ -64,14 +70,27 @@ export interface IStorageHandler {
   readMustConvertStatus (): boolean
 
   readCurrentQueue (): string[]
+  
+  getCurrentQueue(): IUploadPackage[]
+  
+  getCurrentMeta(): IFolderMetaHandler
 
   removeFromQueue (name: string): void
+
+  clearQueue(): void
 
   queuePrivate (toQueue: File | File[], duration?: number): Promise<number>
 
   queuePublic (toQueue: File | File[], duration?: number): Promise<number>
 
   processAllQueues (): Promise<any>
+
+  uploadFile(
+    url: string,
+    startBlock: number,
+    file: File,
+    merkle: string,
+  ): Promise<IProviderUploadResponse>
 
   getFileParticulars (filePath: string): Promise<IFileParticulars>
 

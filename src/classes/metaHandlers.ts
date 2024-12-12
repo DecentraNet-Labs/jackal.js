@@ -122,7 +122,7 @@ export class FolderMetaHandler implements IFolderMetaHandler {
     const rdy: IFolderMetaFoundationalData = {
       count: source.count,
       description: source.description || '',
-      location: `s/ulid/${source.location}`,
+      location: `${source.location}`,
       refIndex: source.refIndex || 0,
       ulid: source.ulid || ulid(),
       whoAmI: source.name,
