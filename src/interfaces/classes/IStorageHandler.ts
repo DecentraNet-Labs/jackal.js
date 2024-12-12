@@ -124,6 +124,13 @@ export interface IStorageHandler {
     merkle: string,
   ): Promise<IProviderUploadResponse>
 
+  uploadFile(
+    url: string,
+    startBlock: number,
+    file: File,
+    merkle: string,
+  ): Promise<IProviderUploadResponse>
+
   getFileParticulars (filePath: string): Promise<IFileParticulars>
 
   downloadFile (filePath: string, trackers: IDownloadTracker): Promise<File>
