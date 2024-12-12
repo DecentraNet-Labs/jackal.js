@@ -14,18 +14,21 @@ import {
   IFolderMetaData,
   IMetaDataByUlidOptions,
   IMoveRenameResourceOptions,
-  IProviderIpSet,
   IReadFolderContentOptions,
   IRemoveShareRecordOptions,
   IShareLinkOptions,
   IShareLinks,
   IShareMetaData,
+  IUnshareOptions,
+  TLoadThumbnailOptions,
+  IFolderMetaHandler,
+  IProviderIpSet,
+  IProviderUploadResponse,
   IShareOptions,
   IStagedUploadPackage,
   IStorageStatus,
-  IUnshareOptions,
-  IWrappedEncodeObject,
-  TLoadThumbnailOptions,
+  IUploadPackage,
+  IWrappedEncodeObject
 } from '@/interfaces'
 import type { TMetaDataSets } from '@/types'
 
@@ -47,6 +50,8 @@ export interface IStorageHandler {
   listChildFiles (): string[]
 
   listChildFileMetas (): IFileMetaData[]
+
+  getChildren(): IChildMetaDataMap
 
   upgradeSigner (): Promise<void>
 
@@ -83,8 +88,14 @@ export interface IStorageHandler {
   readMustConvertStatus (): boolean
 
   readCurrentQueue (): string[]
+  
+  getCurrentQueue(): IUploadPackage[]
+  
+  getCurrentMeta(): IFolderMetaHandler
 
   removeFromQueue (name: string): void
+
+  clearQueue(): void
 
   queuePrivate (toQueue: File | File[], duration?: number): Promise<number>
 
@@ -105,6 +116,13 @@ export interface IStorageHandler {
   findUlid (path: string, address?: string): string
 
   getFileMetaData (filePath: string, address?: string): Promise<IFileMetaData>
+
+  uploadFile(
+    url: string,
+    startBlock: number,
+    file: File,
+    merkle: string,
+  ): Promise<IProviderUploadResponse>
 
   getFileParticulars (filePath: string): Promise<IFileParticulars>
 
